@@ -18,6 +18,7 @@ import br.com.fiap.mentormate.ui.SignupScreen
 import br.com.fiap.mentormate.ui.SingleChatScreen
 import br.com.fiap.mentormate.ui.SwipeCards
 import br.com.fiap.mentormate.ui.theme.MentorMateTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 sealed class DestinationScreen(val rout: String) {
     object Signup: DestinationScreen("signup")
@@ -31,6 +32,7 @@ sealed class DestinationScreen(val rout: String) {
 
 }
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
