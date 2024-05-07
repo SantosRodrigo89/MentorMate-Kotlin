@@ -1,3 +1,8 @@
+buildscript {
+    dependencies {
+        classpath(libs.google.services)
+    }
+}
 plugins {
     id("com.android.application") version "8.3.2" apply false
     id("com.android.library") version "8.0.0" apply false
