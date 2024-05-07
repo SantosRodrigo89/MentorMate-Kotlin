@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -53,10 +54,11 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun SwipeAppNavigation(){
     val navController = rememberNavController()
+    val vm = hiltViewModel<MMViewModel>()
 
-    NavHost(navController = navController, startDestination = DestinationScreen.Swipe.rout){
+    NavHost(navController = navController, startDestination = DestinationScreen.Signup.rout){
         composable(DestinationScreen.Signup.rout) {
-            SignupScreen()
+            SignupScreen(navController, vm)
         }
         composable(DestinationScreen.Login.rout) {
             LoginScreen()
