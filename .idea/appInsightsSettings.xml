@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="br.com.fiap.mentormate" />
+                  <option name="mobileSdkAppId" value="1:751361653740:android:5026d398dafc312bb0dec9" />
+                  <option name="projectId" value="mentormate-23b54" />
+                  <option name="projectNumber" value="751361653740" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

@@ -44,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import br.com.fiap.mentormate.swipecards.Direction
 import br.com.fiap.mentormate.swipecards.MatchProfile
 import br.com.fiap.mentormate.swipecards.profiles
@@ -53,9 +54,9 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
 @Composable
-fun SwipeCards() {
+fun SwipeCards(navController: NavController) {
     TransparentSystemBars()
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(
@@ -68,7 +69,7 @@ fun SwipeCards() {
             )
 //                        .systemBarsPadding()
     ) {
-        Box {
+        Box(modifier = Modifier.weight(1f)) {
             val states = profiles.reversed()
                 .map { it to rememberSwipeableCardState() }
             var hint by remember {
@@ -83,7 +84,8 @@ fun SwipeCards() {
                     .padding(24.dp)
                     .fillMaxSize()
                     .aspectRatio(1f)
-                    .align(Alignment.Center)) {
+                    .align(Alignment.Center)
+            ) {
                 states.forEach { (matchProfile, state) ->
                     if (state.swipedDirection == null) {
                         ProfileCard(
@@ -146,6 +148,11 @@ fun SwipeCards() {
                 )
             }
         }
+
+        BottomNavigationMenu(
+            selectedItem = BottomNavigationItem.SWIPE,
+            navController = navController
+        )
     }
 }
 
@@ -162,8 +169,10 @@ private fun CircleButton(
             .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
         onClick = onClick
     ) {
-        Icon(icon, null,
-            tint = MaterialTheme.colorScheme.onPrimary)
+        Icon(
+            icon, null,
+            tint = MaterialTheme.colorScheme.onPrimary
+        )
     }
 }
 
@@ -174,17 +183,21 @@ private fun ProfileCard(
 ) {
     Card(modifier) {
         Box {
-            Image(contentScale = ContentScale.Crop,
+            Image(
+                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
                 painter = painterResource(matchProfile.drawableResId),
-                contentDescription = null)
+                contentDescription = null
+            )
             Scrim(Modifier.align(Alignment.BottomCenter))
             Column(Modifier.align(Alignment.BottomStart)) {
-                Text(text = matchProfile.name,
+                Text(
+                    text = matchProfile.name,
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(10.dp))
+                    modifier = Modifier.padding(10.dp)
+                )
             }
         }
     }
@@ -239,5 +252,6 @@ fun Scrim(modifier: Modifier = Modifier) {
         modifier
             .background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black)))
             .height(180.dp)
-            .fillMaxWidth())
+            .fillMaxWidth()
+    )
 }

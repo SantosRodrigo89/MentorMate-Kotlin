@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     kotlin("kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -74,6 +75,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.42")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("com.google.firebase:firebase-firestore:24.5.0")
+    implementation(libs.firebase.storage)
     kapt("com.google.dagger:hilt-android-compiler:2.42")
 
     implementation("io.coil-kt:coil-compose:1.3.2")
