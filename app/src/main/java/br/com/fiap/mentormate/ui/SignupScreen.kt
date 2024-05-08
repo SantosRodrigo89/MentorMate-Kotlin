@@ -74,16 +74,20 @@ fun SignupScreen(navController: NavController, vm: MMViewModel) {
                 value = emailState.value,
                 onValueChange = { emailState.value = it },
                 modifier = Modifier.padding(8.dp),
-                label = { Text(text = "Username") })
+                label = { Text(text = "Email") })
             OutlinedTextField(
                 value = passwordState.value,
                 onValueChange = { passwordState.value = it },
                 modifier = Modifier.padding(8.dp),
-                label = { Text(text = "Username") })
+                label = { Text(text = "Password") })
             Button(
                 onClick = {
                     focus.clearFocus(force = true)
-                    //CALL VM ONsIGNUP
+                    vm.onSignUp(
+                        usernameState.value.text,
+                        emailState.value.text,
+                        passwordState.value.text
+                    )
                 },
                 modifier = Modifier.padding(8.dp)
             ) {
