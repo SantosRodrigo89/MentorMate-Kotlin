@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import br.com.fiap.mentormate.data.COLLECTION_USER
 import br.com.fiap.mentormate.data.Event
 import br.com.fiap.mentormate.data.UserData
+import br.com.fiap.mentormate.ui.Gender
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
@@ -86,7 +87,9 @@ class MMViewModel @Inject constructor(
         name: String? = null,
         username: String? = null,
         bio: String? = null,
-        imageUrl: String? = null
+        imageUrl: String? = null,
+        gender: Gender? = null,
+        genderPreference: Gender? = null
     ) {
         val uid = auth.currentUser?.uid
         val userData =
@@ -95,7 +98,9 @@ class MMViewModel @Inject constructor(
                 name = name ?: userData.value?.name,
                 username = username ?: userData.value?.username,
                 imageUrl = imageUrl ?: userData.value?.imageUrl,
-                bio = bio ?: userData.value?.bio
+                bio = bio ?: userData.value?.bio,
+                gender = gender?.toString() ?: userData.value?.gender,
+                genderPreference = genderPreference?.toString() ?: userData.value?.genderPreference
             )
         uid?.let { uid ->
             inProgress.value = true
