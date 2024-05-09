@@ -92,10 +92,10 @@ class MMViewModel @Inject constructor(
         val userData =
             UserData(
                 userId = uid,
-                name = name,
-                username = username,
-                imageUrl = imageUrl,
-                bio = bio
+                name = name ?: userData.value?.name,
+                username = username ?: userData.value?.username,
+                imageUrl = imageUrl ?: userData.value?.imageUrl,
+                bio = bio ?: userData.value?.bio
             )
         uid?.let { uid ->
             inProgress.value = true
@@ -133,6 +133,13 @@ class MMViewModel @Inject constructor(
                     inProgress.value = false
                 }
             }
+    }
+
+    fun onLogout() {
+        auth.signOut()
+        signedIn.value = false
+        userData.value = null
+        popupNotification.value = Event("Logged out")
     }
 
     private fun handleException(exception: Exception? = null, customMessage: String = "") {
