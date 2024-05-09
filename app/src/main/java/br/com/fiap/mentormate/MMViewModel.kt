@@ -26,10 +26,10 @@ class MMViewModel @Inject constructor(
     val userData = mutableStateOf<UserData?>(null)
 
     init {
-       // auth.signOut()
+        // auth.signOut()
         val currentUser = auth.currentUser
-        signedIn.value =  currentUser != null
-        currentUser?.uid?.let {uid ->
+        signedIn.value = currentUser != null
+        currentUser?.uid?.let { uid ->
             getUserData(uid)
         }
     }
@@ -57,6 +57,28 @@ class MMViewModel @Inject constructor(
             }
             .addOnFailureListener {
                 handleException(it)
+            }
+    }
+
+    fun onLogin(email: String, pass: String) {
+        if (email.isEmpty() or pass.isEmpty()) {
+            handleException(customMessage = "Please fill in all fields")
+            return
+        }
+        inProgress.value = true
+        auth.signInWithEmailAndPassword(email, pass)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    signedIn.value = true
+                    inProgress.value = false
+                    auth.currentUser?.uid?.let {
+                        getUserData(it)
+                    }
+                } else
+                    handleException(task.exception, "Login failed")
+            }
+            .addOnFailureListener {
+                handleException(it, "Login failed")
             }
     }
 
@@ -109,10 +131,7 @@ class MMViewModel @Inject constructor(
                     val user = value.toObject<UserData>()
                     userData.value = user
                     inProgress.value = false
-                    getUserData(uid)
                 }
-
-
             }
     }
 
