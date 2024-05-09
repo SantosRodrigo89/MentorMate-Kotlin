@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import br.com.fiap.mentormate.CheckSignedIn
 import br.com.fiap.mentormate.CommonProgressSpinner
 import br.com.fiap.mentormate.DestinationScreen
 import br.com.fiap.mentormate.MMViewModel
@@ -36,6 +37,8 @@ import br.com.fiap.mentormate.navigateTo
 
 @Composable
 fun SignupScreen(navController: NavController, vm: MMViewModel) {
+    CheckSignedIn(vm = vm, navController = navController)
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -74,16 +77,20 @@ fun SignupScreen(navController: NavController, vm: MMViewModel) {
                 value = emailState.value,
                 onValueChange = { emailState.value = it },
                 modifier = Modifier.padding(8.dp),
-                label = { Text(text = "Username") })
+                label = { Text(text = "Email") })
             OutlinedTextField(
                 value = passwordState.value,
                 onValueChange = { passwordState.value = it },
                 modifier = Modifier.padding(8.dp),
-                label = { Text(text = "Username") })
+                label = { Text(text = "Password") })
             Button(
                 onClick = {
                     focus.clearFocus(force = true)
-                    //CALL VM ONsIGNUP
+                    vm.onSignUp(
+                        usernameState.value.text,
+                        emailState.value.text,
+                        passwordState.value.text
+                    )
                 },
                 modifier = Modifier.padding(8.dp)
             ) {
