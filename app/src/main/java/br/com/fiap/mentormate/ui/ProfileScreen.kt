@@ -9,6 +9,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 
+enum class Gender {
+    MALE, FEMALE, ANY
+}
+
 @Composable
 fun ProfileScreen(navController: NavController) {
     Column(
@@ -17,6 +21,9 @@ fun ProfileScreen(navController: NavController) {
         modifier = Modifier.fillMaxSize()
     ) {
         Text(text = "Profile Screen")
-        BottomNavigationMenu(selectedItem = BottomNavigationItem.PROFILER, navController = navController)
+        BottomNavigationMenu(
+            selectedItem = BottomNavigationItem.PROFILER,
+            navController = navController
+        )
     }
 }

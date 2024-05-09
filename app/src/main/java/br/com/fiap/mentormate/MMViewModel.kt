@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import br.com.fiap.mentormate.data.COLLECTION_USER
 import br.com.fiap.mentormate.data.Event
 import br.com.fiap.mentormate.data.UserData
+import br.com.fiap.mentormate.ui.Gender
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
@@ -26,10 +27,10 @@ class MMViewModel @Inject constructor(
     val userData = mutableStateOf<UserData?>(null)
 
     init {
-       // auth.signOut()
+        // auth.signOut()
         val currentUser = auth.currentUser
-        signedIn.value =  currentUser != null
-        currentUser?.uid?.let {uid ->
+        signedIn.value = currentUser != null
+        currentUser?.uid?.let { uid ->
             getUserData(uid)
         }
     }
@@ -60,20 +61,46 @@ class MMViewModel @Inject constructor(
             }
     }
 
+    fun onLogin(email: String, pass: String) {
+        if (email.isEmpty() or pass.isEmpty()) {
+            handleException(customMessage = "Please fill in all fields")
+            return
+        }
+        inProgress.value = true
+        auth.signInWithEmailAndPassword(email, pass)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    signedIn.value = true
+                    inProgress.value = false
+                    auth.currentUser?.uid?.let {
+                        getUserData(it)
+                    }
+                } else
+                    handleException(task.exception, "Login failed")
+            }
+            .addOnFailureListener {
+                handleException(it, "Login failed")
+            }
+    }
+
     private fun createOrUpdateProfile(
         name: String? = null,
         username: String? = null,
         bio: String? = null,
-        imageUrl: String? = null
+        imageUrl: String? = null,
+        gender: Gender? = null,
+        genderPreference: Gender? = null
     ) {
         val uid = auth.currentUser?.uid
         val userData =
             UserData(
                 userId = uid,
-                name = name,
-                username = username,
-                imageUrl = imageUrl,
-                bio = bio
+                name = name ?: userData.value?.name,
+                username = username ?: userData.value?.username,
+                imageUrl = imageUrl ?: userData.value?.imageUrl,
+                bio = bio ?: userData.value?.bio,
+                gender = gender?.toString() ?: userData.value?.gender,
+                genderPreference = genderPreference?.toString() ?: userData.value?.genderPreference
             )
         uid?.let { uid ->
             inProgress.value = true
@@ -109,11 +136,15 @@ class MMViewModel @Inject constructor(
                     val user = value.toObject<UserData>()
                     userData.value = user
                     inProgress.value = false
-                    getUserData(uid)
                 }
-
-
             }
+    }
+
+    fun onLogout() {
+        auth.signOut()
+        signedIn.value = false
+        userData.value = null
+        popupNotification.value = Event("Logged out")
     }
 
     private fun handleException(exception: Exception? = null, customMessage: String = "") {
