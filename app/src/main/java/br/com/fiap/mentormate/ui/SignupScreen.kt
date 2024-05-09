@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import br.com.fiap.mentormate.CheckSignedIn
 import br.com.fiap.mentormate.CommonProgressSpinner
 import br.com.fiap.mentormate.DestinationScreen
 import br.com.fiap.mentormate.MMViewModel
@@ -36,6 +37,8 @@ import br.com.fiap.mentormate.navigateTo
 
 @Composable
 fun SignupScreen(navController: NavController, vm: MMViewModel) {
+    CheckSignedIn(vm = vm, navController = navController)
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
