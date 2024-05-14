@@ -149,6 +149,22 @@ class MMViewModel @Inject constructor(
         popupNotification.value = Event("Logged out")
     }
 
+    fun updateProfileData(
+        name: String,
+        username: String,
+        bio: String,
+        gender: Gender,
+        genderPreference: Gender
+    ) {
+        createOrUpdateProfile(
+            name = name,
+            username = username,
+            bio = bio,
+            gender = gender,
+            genderPreference = genderPreference
+        )
+    }
+
     private fun handleException(exception: Exception? = null, customMessage: String = "") {
         Log.e("MentorMate", "MentorMate Exception", exception)
         exception?.printStackTrace()

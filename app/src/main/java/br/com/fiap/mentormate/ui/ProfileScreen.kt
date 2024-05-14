@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -81,7 +80,7 @@ fun ProfileScreen(navController: NavController, vm: MMViewModel) {
                 onGenderChange = { gender = it },
                 onGenderPreferenceChange = { genderPreference = it },
                 onSave = {
-                    // vm.updateProfileData(name, username, bio, gender, genderPreference)
+                    vm.updateProfileData(name, username, bio, gender, genderPreference)
                 },
                 onBack = { navigateTo(navController, DestinationScreen.Swipe.rout) },
                 onLogout = {
@@ -128,154 +127,158 @@ fun ProfileContent(
         ) {
             Text(text = "Back", modifier = Modifier.clickable { onBack.invoke() })
             Text(text = "Save", modifier = Modifier.clickable { onSave.invoke() })
+
         }
-    }
 
-    CommonDivider()
 
-   // ProfileImage()
+        CommonDivider()
 
-    CommonDivider()
+        // ProfileImage()
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = "Name", modifier = Modifier.width(100.dp))
-        TextField(
-            value = name,
-            onValueChange = onNameChange,
-            modifier = Modifier.background(Color.Transparent),
-            textStyle = TextStyle(color = Color.Black)
-        )
-    }
+        CommonDivider()
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = "Username", modifier = Modifier.width(100.dp))
-        TextField(
-            value = username,
-            onValueChange = onUsernameChange,
-            modifier = Modifier.background(Color.Transparent),
-            textStyle = TextStyle(color = Color.Black)
-        )
-    }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = "Bio", modifier = Modifier.width(100.dp))
-        TextField(
-            value = bio,
-            onValueChange = onBioChange,
+        Row(
             modifier = Modifier
-                .background(Color.Transparent)
-                .height(150.dp),
-            textStyle = TextStyle(color = Color.Black),
-            singleLine = false
-        )
-    }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp),
-        verticalAlignment = Alignment.Top
-    ) {
-        Text(
-            text = "I am a:", modifier = Modifier
-                .width(100.dp)
-                .padding(8.dp)
-        )
-    }
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            RadioButton(selected = gender == Gender.MALE, onClick = { onGenderChange(Gender.MALE) })
-            Text(
-                text = "Man",
-                modifier = Modifier
-                    .padding(4.dp)
-                    .clickable { onGenderChange(Gender.MALE) })
+                .fillMaxWidth()
+                .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "Name", modifier = Modifier.width(100.dp))
+            TextField(
+                value = name,
+                onValueChange = onNameChange,
+                modifier = Modifier.background(Color.Transparent),
+                textStyle = TextStyle(color = Color.Black)
+            )
         }
-    }
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            RadioButton(
-                selected = gender == Gender.FEMALE,
-                onClick = { onGenderChange(Gender.FEMALE) })
-            Text(
-                text = "Woman",
-                modifier = Modifier
-                    .padding(4.dp)
-                    .clickable { onGenderChange(Gender.MALE) })
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "Username", modifier = Modifier.width(100.dp))
+            TextField(
+                value = username,
+                onValueChange = onUsernameChange,
+                modifier = Modifier.background(Color.Transparent),
+                textStyle = TextStyle(color = Color.Black)
+            )
         }
-    }
 
-    CommonDivider()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "Bio", modifier = Modifier.width(100.dp))
+            TextField(
+                value = bio,
+                onValueChange = onBioChange,
+                modifier = Modifier
+                    .background(Color.Transparent)
+                    .height(150.dp),
+                textStyle = TextStyle(color = Color.Black),
+                singleLine = false
+            )
+        }
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp),
-        verticalAlignment = Alignment.Top
-    ) {
-        Text(
-            text = "Looking for:", modifier = Modifier
-                .width(100.dp)
-                .padding(8.dp)
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            Text(
+                text = "I am a:", modifier = Modifier
+                    .width(100.dp)
+                    .padding(8.dp)
+            )
+        }
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 RadioButton(
-                    selected = genderPreference == Gender.MALE,
-                    onClick = { onGenderPreferenceChange(Gender.MALE) })
+                    selected = gender == Gender.MALE,
+                    onClick = { onGenderChange(Gender.MALE) })
                 Text(
-                    text = "Men",
+                    text = "Man",
                     modifier = Modifier
                         .padding(4.dp)
-                        .clickable { onGenderPreferenceChange(Gender.MALE) })
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(
-                    selected = genderPreference == Gender.FEMALE,
-                    onClick = { onGenderPreferenceChange(Gender.FEMALE) })
-                Text(
-                    text = "Women",
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .clickable { onGenderPreferenceChange(Gender.FEMALE) })
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(
-                    selected = genderPreference == Gender.ANY,
-                    onClick = { onGenderPreferenceChange(Gender.ANY) })
-                Text(
-                    text = "Any",
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .clickable { onGenderPreferenceChange(Gender.ANY) })
+                        .clickable { onGenderChange(Gender.MALE) })
             }
         }
-    }
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                RadioButton(
+                    selected = gender == Gender.FEMALE,
+                    onClick = { onGenderChange(Gender.FEMALE) })
+                Text(
+                    text = "Woman",
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .clickable { onGenderChange(Gender.MALE) })
+            }
+        }
 
-    CommonDivider()
+        CommonDivider()
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(text = "Logout", modifier = Modifier.clickable { onLogout.invoke() })
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            Text(
+                text = "Looking for:", modifier = Modifier
+                    .width(100.dp)
+                    .padding(8.dp)
+            )
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(
+                        selected = genderPreference == Gender.MALE,
+                        onClick = { onGenderPreferenceChange(Gender.MALE) })
+                    Text(
+                        text = "Men",
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .clickable { onGenderPreferenceChange(Gender.MALE) })
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(
+                        selected = genderPreference == Gender.FEMALE,
+                        onClick = { onGenderPreferenceChange(Gender.FEMALE) })
+                    Text(
+                        text = "Women",
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .clickable { onGenderPreferenceChange(Gender.FEMALE) })
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(
+                        selected = genderPreference == Gender.ANY,
+                        onClick = { onGenderPreferenceChange(Gender.ANY) })
+                    Text(
+                        text = "Any",
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .clickable { onGenderPreferenceChange(Gender.ANY) })
+                }
+            }
+        }
+
+        CommonDivider()
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(text = "Logout", modifier = Modifier.clickable { onLogout.invoke() })
+        }
     }
 }
 
