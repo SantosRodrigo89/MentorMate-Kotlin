@@ -3,14 +3,19 @@ package br.com.fiap.mentormate.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -26,6 +31,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import br.com.fiap.mentormate.CommonDivider
+import br.com.fiap.mentormate.CommonImage
 import br.com.fiap.mentormate.CommonProgressSpinner
 import br.com.fiap.mentormate.DestinationScreen
 import br.com.fiap.mentormate.MMViewModel
@@ -133,7 +139,7 @@ fun ProfileContent(
 
         CommonDivider()
 
-        // ProfileImage()
+        ProfileImage(imageUrl = imageUrl, vm = vm)
 
         CommonDivider()
 
@@ -284,8 +290,31 @@ fun ProfileContent(
 
 
 @Composable
-fun ProfileImage() {
-    TODO("Not yet implemented")
+fun ProfileImage(imageUrl: String?, vm: MMViewModel) {
+    Box(modifier = Modifier.height(IntrinsicSize.Min)) {
+        Column(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+                .clickable {
+                    //  launcher.launch("image/*")
+                },
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Card(
+                shape = CircleShape, modifier = Modifier
+                    .padding(8.dp)
+                    .size(100.dp)
+            ) {
+                CommonImage(data = imageUrl)
+            }
+            Text(text = "Change profile picture")
+        }
+
+        val isLoading = vm.inProgress.value
+        if (isLoading)
+            CommonProgressSpinner()
+    }
 }
 
 
