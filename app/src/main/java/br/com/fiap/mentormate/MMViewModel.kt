@@ -1,5 +1,6 @@
 package br.com.fiap.mentormate
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -163,6 +165,31 @@ class MMViewModel @Inject constructor(
             gender = gender,
             genderPreference = genderPreference
         )
+    }
+
+    private fun uploadImage(uri: Uri, onSuccess: (Uri) -> Unit) {
+        inProgress.value = true
+
+        val storageRef = storage.reference
+        val uuid = UUID.randomUUID()
+        val imageRef = storageRef.child("images/$uuid")
+        val uploadTask = imageRef.putFile(uri)
+
+        uploadTask
+            .addOnSuccessListener {
+                val result = it.metadata?.reference?.downloadUrl
+                result?.addOnSuccessListener(onSuccess)
+            }
+            .addOnFailureListener {
+                handleException(it)
+                inProgress.value = false
+            }
+    }
+
+    fun uploadProfileImage(uri: Uri) {
+        uploadImage(uri) {
+            createOrUpdateProfile(imageUrl = it.toString())
+        }
     }
 
     private fun handleException(exception: Exception? = null, customMessage: String = "") {
