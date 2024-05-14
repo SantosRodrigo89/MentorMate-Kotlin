@@ -22,7 +22,7 @@ import br.com.fiap.mentormate.navigateTo
 enum class BottomNavigationItem(val icon: Int, val navDestination: DestinationScreen) {
     SWIPE(R.drawable.baseline_swipe, DestinationScreen.Swipe),
     CHATLIST(R.drawable.baseline_chat, DestinationScreen.ChatList),
-    PROFILER(R.drawable.baseline_person, DestinationScreen.Profile)
+    PROFILE(R.drawable.baseline_person, DestinationScreen.Profile)
 }
 
 @Composable
