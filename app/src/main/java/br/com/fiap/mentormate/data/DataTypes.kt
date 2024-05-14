@@ -11,7 +11,7 @@ data class UserData(
 ) {
     fun toMap() = mapOf(
         "userId" to userId,
-        "name" to username,
+        "name" to name,
         "username" to username,
         "imageUrl" to imageUrl,
         "bio" to bio,

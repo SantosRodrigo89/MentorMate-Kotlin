@@ -47,9 +47,10 @@ class MMViewModel @Inject constructor(
                 if (it.isEmpty)
                     auth.createUserWithEmailAndPassword(email, pass)
                         .addOnCompleteListener { task ->
-                            if (task.isSuccessful)
+                            if (task.isSuccessful) {
+                                signedIn.value = true
                                 createOrUpdateProfile(username = username)
-                            else
+                            } else
                                 handleException(task.exception, "Signup failed")
                         }
                 else
@@ -110,6 +111,7 @@ class MMViewModel @Inject constructor(
                     if (it.exists())
                         it.reference.update(userData.toMap())
                             .addOnSuccessListener {
+                                this.userData.value = userData
                                 inProgress.value = false
                             }
                             .addOnFailureListener {
@@ -145,6 +147,22 @@ class MMViewModel @Inject constructor(
         signedIn.value = false
         userData.value = null
         popupNotification.value = Event("Logged out")
+    }
+
+    fun updateProfileData(
+        name: String,
+        username: String,
+        bio: String,
+        gender: Gender,
+        genderPreference: Gender
+    ) {
+        createOrUpdateProfile(
+            name = name,
+            username = username,
+            bio = bio,
+            gender = gender,
+            genderPreference = genderPreference
+        )
     }
 
     private fun handleException(exception: Exception? = null, customMessage: String = "") {
