@@ -4,11 +4,16 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import br.com.fiap.mentormate.data.COLLECTION_CHAT
 import br.com.fiap.mentormate.data.COLLECTION_USER
+import br.com.fiap.mentormate.data.ChatData
+import br.com.fiap.mentormate.data.ChatUser
 import br.com.fiap.mentormate.data.Event
 import br.com.fiap.mentormate.data.UserData
 import br.com.fiap.mentormate.ui.Gender
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
@@ -27,6 +32,9 @@ class MMViewModel @Inject constructor(
     val popupNotification = mutableStateOf<Event<String>?>(null)
     val signedIn = mutableStateOf(false)
     val userData = mutableStateOf<UserData?>(null)
+
+    val matchProfiles = mutableStateOf<List<UserData>>(listOf())
+    val inProgressProfiles = mutableStateOf(false)
 
     init {
         // auth.signOut()
@@ -115,6 +123,7 @@ class MMViewModel @Inject constructor(
                             .addOnSuccessListener {
                                 this.userData.value = userData
                                 inProgress.value = false
+                                populateCards()
                             }
                             .addOnFailureListener {
                                 handleException(it, "Cannot update user")
@@ -140,6 +149,7 @@ class MMViewModel @Inject constructor(
                     val user = value.toObject<UserData>()
                     userData.value = user
                     inProgress.value = false
+                    populateCards()
                 }
             }
     }
@@ -201,4 +211,100 @@ class MMViewModel @Inject constructor(
         inProgress.value = false
     }
 
+    private fun populateCards() {
+        inProgressProfiles.value = true
+
+        val g = if (userData.value?.gender.isNullOrEmpty()) "ANY"
+        else userData.value!!.gender!!.uppercase()
+        val gPref = if (userData.value?.genderPreference.isNullOrEmpty()) "ANY"
+        else userData.value!!.genderPreference!!.uppercase()
+
+        val cardsQuery =
+            when (Gender.valueOf(gPref)) {
+                Gender.MALE -> db.collection(COLLECTION_USER)
+                    .whereEqualTo("gender", Gender.MALE)
+
+                Gender.FEMALE -> db.collection(COLLECTION_USER)
+                    .whereEqualTo("gender", Gender.FEMALE)
+
+                Gender.ANY -> db.collection(COLLECTION_USER)
+            }
+        val userGender = Gender.valueOf(g)
+
+        cardsQuery.where(
+            Filter.and(
+                Filter.notEqualTo("userId", userData.value?.userId),
+                Filter.or(
+                    Filter.equalTo("genderPreference", userGender),
+                    Filter.equalTo("genderPreference", Gender.ANY)
+                )
+            )
+        )
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    inProgressProfiles.value = false
+                    handleException(error)
+                }
+                if (value != null) {
+                    val potentials = mutableListOf<UserData>()
+                    value.documents.forEach {
+                        it.toObject<UserData>()?.let { potential ->
+                            var showUser = true
+                            if (userData.value?.swipesLeft?.contains(potential.userId) == true ||
+                                userData.value?.swipesRight?.contains(potential.userId) == true ||
+                                userData.value?.matches?.contains(potential.userId) == true
+                            )
+                                showUser = false
+                            if (showUser)
+                                potentials.add(potential)
+                        }
+                    }
+                    matchProfiles.value = potentials
+                    inProgressProfiles.value = false
+                }
+            }
+
+    }
+
+    fun onDislike(selectedUser: UserData) {
+        db.collection(COLLECTION_USER).document(userData.value?.userId ?: "")
+            .update("swipesLeft", FieldValue.arrayUnion(selectedUser.userId))
+    }
+
+    fun onLike(selectedUser: UserData) {
+        val reciprocalMatch = selectedUser.swipesRight.contains(userData.value?.userId)
+        if (!reciprocalMatch) {
+            db.collection(COLLECTION_USER).document(userData.value?.userId ?: "")
+                .update("swipesRight", FieldValue.arrayUnion(selectedUser.userId))
+        } else {
+            popupNotification.value = Event("Match!")
+
+            db.collection(COLLECTION_USER).document(selectedUser.userId ?: "")
+                .update("swipesRight", FieldValue.arrayRemove(userData.value?.userId))
+            db.collection(COLLECTION_USER).document(selectedUser.userId ?: "")
+                .update("matches", FieldValue.arrayUnion(userData.value?.userId))
+            db.collection(COLLECTION_USER).document(userData.value?.userId ?: "")
+                .update("matches", FieldValue.arrayUnion(selectedUser.userId))
+
+            val chatKey = db.collection(COLLECTION_CHAT).document().id
+            val chatData = ChatData(
+                chatKey,
+                ChatUser(
+                    userData.value?.userId,
+                    if (userData.value?.name.isNullOrEmpty()) userData.value?.username
+                    else userData.value?.name,
+                    userData.value?.imageUrl
+                ),
+                ChatUser(
+                    selectedUser.userId,
+                    if (selectedUser.name.isNullOrEmpty()) selectedUser.username
+                    else selectedUser.name,
+                    selectedUser.imageUrl
+                )
+            )
+            db.collection(COLLECTION_CHAT).document(chatKey).set(chatData)
+        }
+    }
 }
+
+

@@ -17,7 +17,7 @@ import br.com.fiap.mentormate.ui.LoginScreen
 import br.com.fiap.mentormate.ui.ProfileScreen
 import br.com.fiap.mentormate.ui.SignupScreen
 import br.com.fiap.mentormate.ui.SingleChatScreen
-import br.com.fiap.mentormate.ui.SwipeCards
+import br.com.fiap.mentormate.ui.SwipeScreen
 import br.com.fiap.mentormate.ui.theme.MentorMateTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -69,7 +69,7 @@ fun SwipeAppNavigation(){
             ProfileScreen(navController, vm)
         }
         composable(DestinationScreen.Swipe.rout) {
-            SwipeCards(navController)
+            SwipeScreen(navController, vm)
         }
         composable(DestinationScreen.ChatList.rout) {
             ChatListScreen(navController)
