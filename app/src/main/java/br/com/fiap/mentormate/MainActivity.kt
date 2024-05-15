@@ -22,12 +22,12 @@ import br.com.fiap.mentormate.ui.theme.MentorMateTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 sealed class DestinationScreen(val rout: String) {
-    object Signup: DestinationScreen("signup")
-    object Login: DestinationScreen("login")
-    object Profile: DestinationScreen("profile")
-    object Swipe: DestinationScreen("swipe")
-    object ChatList: DestinationScreen("chatlist")
-    object SingleChat: DestinationScreen("singleChat/{chatId}"){
+    object Signup : DestinationScreen("signup")
+    object Login : DestinationScreen("login")
+    object Profile : DestinationScreen("profile")
+    object Swipe : DestinationScreen("swipe")
+    object ChatList : DestinationScreen("chatlist")
+    object SingleChat : DestinationScreen("singleChat/{chatId}") {
         fun createRoute(id: String) = "singleChat/$id"
     }
 
@@ -52,13 +52,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun SwipeAppNavigation(){
+fun SwipeAppNavigation() {
     val navController = rememberNavController()
     val vm = hiltViewModel<MMViewModel>()
 
     NotificationMessage(vm = vm)
 
-    NavHost(navController = navController, startDestination = DestinationScreen.Signup.rout){
+    NavHost(navController = navController, startDestination = DestinationScreen.Signup.rout) {
         composable(DestinationScreen.Signup.rout) {
             SignupScreen(navController, vm)
         }
@@ -72,10 +72,13 @@ fun SwipeAppNavigation(){
             SwipeScreen(navController, vm)
         }
         composable(DestinationScreen.ChatList.rout) {
-            ChatListScreen(navController)
+            ChatListScreen(navController, vm)
         }
         composable(DestinationScreen.SingleChat.rout) {
-            SingleChatScreen(chatId = "123")
+            val chatId = it.arguments?.getString("chatId")
+            chatId?.let {
+                SingleChatScreen(navController = navController, vm = vm, chatId = it)
+            }
         }
     }
 

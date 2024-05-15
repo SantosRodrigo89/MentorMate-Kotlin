@@ -5,19 +5,23 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import br.com.fiap.mentormate.data.COLLECTION_CHAT
+import br.com.fiap.mentormate.data.COLLECTION_MESSAGES
 import br.com.fiap.mentormate.data.COLLECTION_USER
 import br.com.fiap.mentormate.data.ChatData
 import br.com.fiap.mentormate.data.ChatUser
 import br.com.fiap.mentormate.data.Event
+import br.com.fiap.mentormate.data.Message
 import br.com.fiap.mentormate.data.UserData
 import br.com.fiap.mentormate.ui.Gender
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.Calendar
 import java.util.UUID
 import javax.inject.Inject
 
@@ -35,6 +39,13 @@ class MMViewModel @Inject constructor(
 
     val matchProfiles = mutableStateOf<List<UserData>>(listOf())
     val inProgressProfiles = mutableStateOf(false)
+
+    val chats = mutableStateOf<List<ChatData>>(listOf())
+    val inProgressChats = mutableStateOf(false)
+
+    val inProgressChatMessages = mutableStateOf(false)
+    val chatMessages = mutableStateOf<List<Message>>(listOf())
+    var currentChatMessagesListener: ListenerRegistration? = null
 
     init {
         // auth.signOut()
@@ -150,6 +161,7 @@ class MMViewModel @Inject constructor(
                     userData.value = user
                     inProgress.value = false
                     populateCards()
+                    populateChats()
                 }
             }
     }
@@ -305,6 +317,53 @@ class MMViewModel @Inject constructor(
             db.collection(COLLECTION_CHAT).document(chatKey).set(chatData)
         }
     }
+
+    private fun populateChats() {
+        inProgressChats.value = true
+        db.collection(COLLECTION_CHAT).where(
+            Filter.or(
+                Filter.equalTo("user1.userId", userData.value?.userId),
+                Filter.equalTo("user2.userId", userData.value?.userId)
+            )
+        )
+            .addSnapshotListener { value, error ->
+                if (error != null)
+                    handleException(error)
+                if (value != null)
+                    chats.value = value.documents.mapNotNull { it.toObject<ChatData>() }
+                inProgressChats.value = false
+            }
+    }
+
+    fun onSendReply(chatId: String, message: String) {
+        val time = Calendar.getInstance().time.toString()
+        val message = Message(userData.value?.userId, message, time)
+        db.collection(COLLECTION_CHAT).document(chatId)
+            .collection(COLLECTION_MESSAGES).document().set(message)
+    }
+
+    fun populateChat(chatId: String) {
+        inProgressChatMessages.value = true
+        currentChatMessagesListener = db.collection(COLLECTION_CHAT)
+            .document(chatId)
+            .collection(COLLECTION_MESSAGES)
+            .addSnapshotListener { value, error ->
+                if (error != null)
+                    handleException(error)
+                if (value != null)
+                    chatMessages.value = value.documents
+                        .mapNotNull { it.toObject<Message>() }
+                        .sortedBy { it.timestamp }
+                inProgressChatMessages.value = false
+            }
+    }
+
+    fun depopulateChat() {
+        currentChatMessagesListener = null
+        chatMessages.value = listOf()
+    }
 }
+
+
 
 
