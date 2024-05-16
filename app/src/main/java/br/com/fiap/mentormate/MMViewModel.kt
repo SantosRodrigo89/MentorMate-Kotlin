@@ -297,7 +297,7 @@ class MMViewModel @Inject constructor(
             db.collection(COLLECTION_USER).document(userData.value?.userId ?: "")
                 .update("swipesRight", FieldValue.arrayUnion(selectedUser.userId))
         } else {
-            popupNotification.value = Event("Match!")
+            popupNotification.value = Event("Deu Match!")
 
             db.collection(COLLECTION_USER).document(selectedUser.userId ?: "")
                 .update("swipesRight", FieldValue.arrayRemove(userData.value?.userId))
