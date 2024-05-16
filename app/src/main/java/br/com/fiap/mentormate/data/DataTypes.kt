@@ -8,6 +8,8 @@ data class UserData(
     var bio: String? = "",
     var gender: String? = "",
     var genderPreference: String? = "",
+    var experience: String? = "",
+    var educationalBackground: String? = "",
     var swipesLeft: List<String> = listOf(),
     var swipesRight: List<String> = listOf(),
     var matches: List<String> = listOf()
@@ -20,6 +22,8 @@ data class UserData(
         "bio" to bio,
         "gender" to gender,
         "genderPreference" to genderPreference,
+        "experience" to experience,
+        "educationalBackground" to educationalBackground,
         "swipesLeft" to swipesLeft,
         "swipesRight" to swipesRight,
         "matches" to matches

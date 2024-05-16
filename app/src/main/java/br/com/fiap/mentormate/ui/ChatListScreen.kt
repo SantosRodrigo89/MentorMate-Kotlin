@@ -47,7 +47,7 @@ fun ChatListScreen(navController: NavController, vm: MMViewModel) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(text = "No chats available")
+                    Text(text = "Nenhum chat encontrado")
                 }
             else {
                 LazyColumn(modifier = Modifier.weight(1f)) {

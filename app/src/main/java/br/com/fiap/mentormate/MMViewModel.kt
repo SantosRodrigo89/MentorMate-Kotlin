@@ -58,7 +58,7 @@ class MMViewModel @Inject constructor(
 
     fun onSignUp(username: String, email: String, pass: String) {
         if (username.isEmpty() or email.isEmpty() or pass.isEmpty()) {
-            handleException(customMessage = "Please fill in all fields")
+            handleException(customMessage = "Por favor preencha todos os campos")
             return
         }
         inProgress.value = true
@@ -72,10 +72,10 @@ class MMViewModel @Inject constructor(
                                 signedIn.value = true
                                 createOrUpdateProfile(username = username)
                             } else
-                                handleException(task.exception, "Signup failed")
+                                handleException(task.exception, "Falha no login")
                         }
                 else
-                    handleException(customMessage = "username already exists")
+                    handleException(customMessage = "username em uso")
                 inProgress.value = false
             }
             .addOnFailureListener {
@@ -85,7 +85,7 @@ class MMViewModel @Inject constructor(
 
     fun onLogin(email: String, pass: String) {
         if (email.isEmpty() or pass.isEmpty()) {
-            handleException(customMessage = "Please fill in all fields")
+            handleException(customMessage = "Por favor preencha todos os campos")
             return
         }
         inProgress.value = true
@@ -109,6 +109,8 @@ class MMViewModel @Inject constructor(
         name: String? = null,
         username: String? = null,
         bio: String? = null,
+        experience: String? = null,
+        educationalBackground: String? = null,
         imageUrl: String? = null,
         gender: Gender? = null,
         genderPreference: Gender? = null
@@ -121,6 +123,8 @@ class MMViewModel @Inject constructor(
                 username = username ?: userData.value?.username,
                 imageUrl = imageUrl ?: userData.value?.imageUrl,
                 bio = bio ?: userData.value?.bio,
+                experience = experience ?: userData.value?.experience,
+                educationalBackground = educationalBackground ?: userData.value?.educationalBackground,
                 gender = gender?.toString() ?: userData.value?.gender,
                 genderPreference = genderPreference?.toString() ?: userData.value?.genderPreference
             )
@@ -137,7 +141,7 @@ class MMViewModel @Inject constructor(
                                 populateCards()
                             }
                             .addOnFailureListener {
-                                handleException(it, "Cannot update user")
+                                handleException(it, "Não foi possível atualizar o usuário")
                             }
                     else {
                         db.collection(COLLECTION_USER).document(uid).set(userData)
@@ -145,7 +149,7 @@ class MMViewModel @Inject constructor(
                     }
                 }
                 .addOnFailureListener {
-                    handleException(it, "Cannot create user")
+                    handleException(it, "Não  foi possível criar o usuário")
                 }
         }
     }
@@ -155,7 +159,7 @@ class MMViewModel @Inject constructor(
         db.collection(COLLECTION_USER).document(uid)
             .addSnapshotListener { value, error ->
                 if (error != null)
-                    handleException(error, "Cannot retrieve user data")
+                    handleException(error, "Não foi possível recuperar o usuário")
                 if (value != null) {
                     val user = value.toObject<UserData>()
                     userData.value = user
@@ -177,6 +181,8 @@ class MMViewModel @Inject constructor(
         name: String,
         username: String,
         bio: String,
+        experience: String,
+        educationalBackground: String,
         gender: Gender,
         genderPreference: Gender
     ) {
@@ -184,6 +190,8 @@ class MMViewModel @Inject constructor(
             name = name,
             username = username,
             bio = bio,
+            experience = experience,
+            educationalBackground = educationalBackground,
             gender = gender,
             genderPreference = genderPreference
         )
@@ -233,11 +241,11 @@ class MMViewModel @Inject constructor(
 
         val cardsQuery =
             when (Gender.valueOf(gPref)) {
-                Gender.MALE -> db.collection(COLLECTION_USER)
-                    .whereEqualTo("gender", Gender.MALE)
+                Gender.MENTOR -> db.collection(COLLECTION_USER)
+                    .whereEqualTo("gender", Gender.MENTOR)
 
-                Gender.FEMALE -> db.collection(COLLECTION_USER)
-                    .whereEqualTo("gender", Gender.FEMALE)
+                Gender.MENTORADO -> db.collection(COLLECTION_USER)
+                    .whereEqualTo("gender", Gender.MENTORADO)
 
                 Gender.ANY -> db.collection(COLLECTION_USER)
             }

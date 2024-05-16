@@ -73,7 +73,7 @@ fun SwipeScreen(navController: NavController, vm: MMViewModel) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(text = "No more profiles available")
+                    Text(text = "Sem perfis disponíveis")
                 }
                 states.forEach { (matchProfile, state) ->
                     ProfileCard(

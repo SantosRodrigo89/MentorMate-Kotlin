@@ -41,7 +41,7 @@ import br.com.fiap.mentormate.MMViewModel
 import br.com.fiap.mentormate.navigateTo
 
 enum class Gender {
-    MALE, FEMALE, ANY
+    MENTOR, MENTORADO, ANY
 }
 
 @Composable
@@ -51,13 +51,15 @@ fun ProfileScreen(navController: NavController, vm: MMViewModel) {
         CommonProgressSpinner()
     else {
         val userData = vm.userData.value
-        val g = if (userData?.gender.isNullOrEmpty()) "MALE"
+        val g = if (userData?.gender.isNullOrEmpty()) "MENTOR"
         else userData!!.gender!!.uppercase()
-        val gPref = if (userData?.genderPreference.isNullOrEmpty()) "FEMALE"
+        val gPref = if (userData?.genderPreference.isNullOrEmpty()) "MENTORADO"
         else userData!!.genderPreference!!.uppercase()
         var name by rememberSaveable { mutableStateOf(userData?.name ?: "") }
         var username by rememberSaveable { mutableStateOf(userData?.username ?: "") }
         var bio by rememberSaveable { mutableStateOf(userData?.bio ?: "") }
+        var experience by rememberSaveable { mutableStateOf(userData?.experience ?: "") }
+        var educationalBackground by rememberSaveable { mutableStateOf(userData?.educationalBackground ?: "") }
         var gender by rememberSaveable { mutableStateOf(Gender.valueOf(g)) }
         var genderPreference by rememberSaveable { mutableStateOf(Gender.valueOf(gPref)) }
 
@@ -73,15 +75,27 @@ fun ProfileScreen(navController: NavController, vm: MMViewModel) {
                 name = name,
                 username = username,
                 bio = bio,
+                experience = experience,
+                educationalBackground = educationalBackground,
                 gender = gender,
                 genderPreference = genderPreference,
                 onNameChange = { name = it },
                 onUsernameChange = { username = it },
                 onBioChange = { bio = it },
+                onExperienceChange = { experience = it },
+                onEducationalBackgroundChange = { educationalBackground = it },
                 onGenderChange = { gender = it },
                 onGenderPreferenceChange = { genderPreference = it },
                 onSave = {
-                    vm.updateProfileData(name, username, bio, gender, genderPreference)
+                    vm.updateProfileData(
+                        name,
+                        username,
+                        bio,
+                        experience,
+                        educationalBackground,
+                        gender,
+                        genderPreference
+                    )
                 },
                 onBack = { navigateTo(navController, DestinationScreen.Swipe.rout) },
                 onLogout = {
@@ -106,11 +120,15 @@ fun ProfileContent(
     name: String,
     username: String,
     bio: String,
+    experience: String,
+    educationalBackground: String,
     gender: Gender,
     genderPreference: Gender,
     onNameChange: (String) -> Unit,
     onUsernameChange: (String) -> Unit,
     onBioChange: (String) -> Unit,
+    onExperienceChange: (String) -> Unit,
+    onEducationalBackgroundChange: (String) -> Unit,
     onGenderChange: (Gender) -> Unit,
     onGenderPreferenceChange: (Gender) -> Unit,
     onSave: () -> Unit,
@@ -126,8 +144,8 @@ fun ProfileContent(
                 .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "Back", modifier = Modifier.clickable { onBack.invoke() })
-            Text(text = "Save", modifier = Modifier.clickable { onSave.invoke() })
+            Text(text = "Voltar", modifier = Modifier.clickable { onBack.invoke() })
+            Text(text = "Salvar", modifier = Modifier.clickable { onSave.invoke() })
 
         }
 
@@ -143,7 +161,7 @@ fun ProfileContent(
                 .padding(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Name", modifier = Modifier.width(100.dp))
+            Text(text = "Nome", modifier = Modifier.width(100.dp))
             TextField(
                 value = name,
                 onValueChange = onNameChange,
@@ -158,7 +176,7 @@ fun ProfileContent(
                 .padding(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Username", modifier = Modifier.width(100.dp))
+            Text(text = "Usuário", modifier = Modifier.width(100.dp))
             TextField(
                 value = username,
                 onValueChange = onUsernameChange,
@@ -173,7 +191,7 @@ fun ProfileContent(
                 .padding(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Bio", modifier = Modifier.width(100.dp))
+            Text(text = "Sobre mim", modifier = Modifier.width(100.dp))
             TextField(
                 value = bio,
                 onValueChange = onBioChange,
@@ -189,10 +207,46 @@ fun ProfileContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "Experiência", modifier = Modifier.width(100.dp))
+            TextField(
+                value = experience,
+                onValueChange = onExperienceChange,
+                modifier = Modifier
+                    .background(Color.Transparent)
+                    .height(150.dp),
+                textStyle = TextStyle(color = Color.Black),
+                singleLine = false
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "Formação acadêmica", modifier = Modifier.width(100.dp))
+            TextField(
+                value = educationalBackground,
+                onValueChange = onEducationalBackgroundChange,
+                modifier = Modifier
+                    .background(Color.Transparent)
+                    .height(150.dp),
+                textStyle = TextStyle(color = Color.Black),
+                singleLine = false
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
             verticalAlignment = Alignment.Top
         ) {
             Text(
-                text = "I am a:", modifier = Modifier
+                text = "Quero ser :", modifier = Modifier
                     .width(100.dp)
                     .padding(8.dp)
             )
@@ -200,25 +254,25 @@ fun ProfileContent(
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 RadioButton(
-                    selected = gender == Gender.MALE,
-                    onClick = { onGenderChange(Gender.MALE) })
+                    selected = gender == Gender.MENTOR,
+                    onClick = { onGenderChange(Gender.MENTOR) })
                 Text(
-                    text = "Man",
+                    text = "Mentor",
                     modifier = Modifier
                         .padding(4.dp)
-                        .clickable { onGenderChange(Gender.MALE) })
+                        .clickable { onGenderChange(Gender.MENTOR) })
             }
         }
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 RadioButton(
-                    selected = gender == Gender.FEMALE,
-                    onClick = { onGenderChange(Gender.FEMALE) })
+                    selected = gender == Gender.MENTORADO,
+                    onClick = { onGenderChange(Gender.MENTORADO) })
                 Text(
-                    text = "Woman",
+                    text = "Mentorado",
                     modifier = Modifier
                         .padding(4.dp)
-                        .clickable { onGenderChange(Gender.MALE) })
+                        .clickable { onGenderChange(Gender.MENTOR) })
             }
         }
 
@@ -231,37 +285,37 @@ fun ProfileContent(
             verticalAlignment = Alignment.Top
         ) {
             Text(
-                text = "Looking for:", modifier = Modifier
+                text = "Tipo de Mentoria:", modifier = Modifier
                     .width(100.dp)
                     .padding(8.dp)
             )
             Column(modifier = Modifier.fillMaxWidth()) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(
-                        selected = genderPreference == Gender.MALE,
-                        onClick = { onGenderPreferenceChange(Gender.MALE) })
+                        selected = genderPreference == Gender.MENTOR,
+                        onClick = { onGenderPreferenceChange(Gender.MENTOR) })
                     Text(
-                        text = "Men",
+                        text = "Presencial",
                         modifier = Modifier
                             .padding(4.dp)
-                            .clickable { onGenderPreferenceChange(Gender.MALE) })
+                            .clickable { onGenderPreferenceChange(Gender.MENTOR) })
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(
-                        selected = genderPreference == Gender.FEMALE,
-                        onClick = { onGenderPreferenceChange(Gender.FEMALE) })
+                        selected = genderPreference == Gender.MENTORADO,
+                        onClick = { onGenderPreferenceChange(Gender.MENTORADO) })
                     Text(
-                        text = "Women",
+                        text = "Online",
                         modifier = Modifier
                             .padding(4.dp)
-                            .clickable { onGenderPreferenceChange(Gender.FEMALE) })
+                            .clickable { onGenderPreferenceChange(Gender.MENTORADO) })
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(
                         selected = genderPreference == Gender.ANY,
                         onClick = { onGenderPreferenceChange(Gender.ANY) })
                     Text(
-                        text = "Any",
+                        text = "Ambas",
                         modifier = Modifier
                             .padding(4.dp)
                             .clickable { onGenderPreferenceChange(Gender.ANY) })
@@ -277,7 +331,7 @@ fun ProfileContent(
                 .padding(16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(text = "Logout", modifier = Modifier.clickable { onLogout.invoke() })
+            Text(text = "Sair", modifier = Modifier.clickable { onLogout.invoke() })
         }
     }
 }
@@ -308,7 +362,7 @@ fun ProfileImage(imageUrl: String?, vm: MMViewModel) {
             ) {
                 CommonImage(data = imageUrl)
             }
-            Text(text = "Change profile picture")
+            Text(text = "Alterar foto")
         }
 
         val isLoading = vm.inProgress.value
