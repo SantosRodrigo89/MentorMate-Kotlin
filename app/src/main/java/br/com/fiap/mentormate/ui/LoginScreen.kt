@@ -54,7 +54,7 @@ fun LoginScreen(navController: NavController, vm: MMViewModel) {
             val focus = LocalFocusManager.current
 
             Image(
-                painter = painterResource(id = R.drawable.fire),
+                painter = painterResource(id = R.drawable.mmlogo),
                 contentDescription = null,
                 modifier = Modifier
                     .width(200.dp)
@@ -62,7 +62,7 @@ fun LoginScreen(navController: NavController, vm: MMViewModel) {
                     .padding(8.dp)
             )
             Text(
-                text = "Login",
+                text = "Acesse sua conta",
                 modifier = Modifier.padding(8.dp),
                 fontSize = 30.sp,
                 fontFamily = FontFamily.SansSerif
@@ -90,11 +90,11 @@ fun LoginScreen(navController: NavController, vm: MMViewModel) {
                 },
                 modifier = Modifier.padding(8.dp)
             ) {
-                Text(text = "LOGIN")
+                Text(text = "ENTRAR")
             }
 
             Text(
-                text = "New here? Go to signup ->",
+                text = "Novo aqui? Cadastre-se ->",
                 color = Color.Blue,
                 modifier = Modifier
                     .padding(8.dp)

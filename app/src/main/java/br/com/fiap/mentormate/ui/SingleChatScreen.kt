@@ -151,7 +151,7 @@ fun ReplyBox(reply: String, onReplyChange: (String) -> Unit, onSendReply: () -> 
         ) {
             TextField(value = reply, onValueChange = onReplyChange, maxLines = 3)
             Button(onClick = onSendReply) {
-                Text(text = "Send")
+                Text(text = "Enviar")
             }
         }
     }

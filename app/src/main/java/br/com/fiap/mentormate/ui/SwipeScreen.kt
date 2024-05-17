@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.ThumbUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -73,7 +73,7 @@ fun SwipeScreen(navController: NavController, vm: MMViewModel) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(text = "No more profiles available")
+                    Text(text = "Sem perfis disponíveis")
                 }
                 states.forEach { (matchProfile, state) ->
                     ProfileCard(
@@ -123,7 +123,7 @@ fun SwipeScreen(navController: NavController, vm: MMViewModel) {
                         }?.second
                         last?.swipe(Direction.Right)
                     }
-                }, icon = Icons.Rounded.Favorite)
+                }, icon = Icons.Rounded.ThumbUp)
             }
 
             //Bottom nav bar
@@ -170,6 +170,20 @@ private fun ProfileCard(
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(10.dp)
+                )
+                Text(
+                    text = matchProfile.gender ?: matchProfile.gender ?: "",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Light,
+                    modifier = Modifier.padding(10.dp)
+                )
+                Text(
+                    text = matchProfile.experience ?: matchProfile.experience ?: "",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Light,
                     modifier = Modifier.padding(10.dp)
                 )
             }

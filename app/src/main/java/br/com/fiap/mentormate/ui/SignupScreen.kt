@@ -56,7 +56,7 @@ fun SignupScreen(navController: NavController, vm: MMViewModel) {
             val focus = LocalFocusManager.current
 
             Image(
-                painter = painterResource(id = R.drawable.fire),
+                painter = painterResource(id = R.drawable.mmlogo),
                 contentDescription = null,
                 modifier = Modifier
                     .width(200.dp)
@@ -64,7 +64,7 @@ fun SignupScreen(navController: NavController, vm: MMViewModel) {
                     .padding(8.dp)
             )
             Text(
-                text = "Signup",
+                text = "Crie sua conta",
                 modifier = Modifier.padding(8.dp),
                 fontSize = 30.sp,
                 fontFamily = FontFamily.SansSerif
@@ -73,7 +73,7 @@ fun SignupScreen(navController: NavController, vm: MMViewModel) {
                 value = usernameState.value,
                 onValueChange = { usernameState.value = it },
                 modifier = Modifier.padding(8.dp),
-                label = { Text(text = "Username") })
+                label = { Text(text = "Usuário") })
             OutlinedTextField(
                 value = emailState.value,
                 onValueChange = { emailState.value = it },
@@ -83,7 +83,7 @@ fun SignupScreen(navController: NavController, vm: MMViewModel) {
                 value = passwordState.value,
                 onValueChange = { passwordState.value = it },
                 modifier = Modifier.padding(8.dp),
-                label = { Text(text = "Password") },
+                label = { Text(text = "Senha") },
                 visualTransformation = PasswordVisualTransformation()
             )
             Button(
@@ -97,11 +97,11 @@ fun SignupScreen(navController: NavController, vm: MMViewModel) {
                 },
                 modifier = Modifier.padding(8.dp)
             ) {
-                Text(text = "SIGN UP")
+                Text(text = "ENTRAR")
             }
 
             Text(
-                text = "Already a user? Go to login ->",
+                text = "Já tem uma conta? Clique aqui ->",
                 color = Color.Blue,
                 modifier = Modifier
                     .padding(8.dp)
