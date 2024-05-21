@@ -1,28 +1,29 @@
 # MentorMate-Kotlin
 
-Welcome to MentorMate-Kotlin, your go-to platform for connecting mentors and students in a seamless and intuitive way! This Kotlin-based Tinder-like app revolutionizes the mentorship experience by providing a dynamic and interactive platform for mentorship matchmaking.
+Bem-vindo ao MentorMate-Kotlin, sua plataforma ideal para conectar mentores e alunos de maneira intuitiva e eficiente! Este aplicativo baseado em Kotlin, similar ao Tinder, revoluciona a experiência de mentoria ao proporcionar uma plataforma dinâmica e interativa para a criação de conexões de mentoria.
 
-## Key Features
+Este projeto é realizado para o desafio proposto pela DB1 aos alunos de Análise e Desenvolvimento de Sistemas da Fiap.
 
-- **Swipe Matching:** Effortlessly discover potential mentorship connections through a familiar and intuitive swiping interface.
-- **Detailed Profiles:** Create comprehensive profiles that showcase your skills, experiences, and areas of expertise.
-- **In-App Messaging:** Seamlessly communicate with your matches within the app to discuss goals, expectations, and establish a rapport.
-- **Customizable Preferences:** Tailor your mentorship preferences to ensure compatibility and alignment with your desired learning or teaching style.
-- **Secure and Private:** Rest assured that your data and interactions are kept secure and private, fostering a trusted environment for mentorship.
+## Principais Recursos
 
-## Getting Started
+- **Swipe Matching**: Descubra conexões de mentoria em potencial de maneira fácil e intuitiva através de uma interface de deslize familiar.
+- **Perfis Detalhados**: Crie perfis abrangentes que destacam suas habilidades, experiências e áreas de especialização.
+- **Mensagens no App**: Comunique-se perfeitamente com suas conexões dentro do aplicativo para discutir metas, expectativas e estabelecer um bom relacionamento.
+- **Preferências Personalizáveis**: Ajuste suas preferências de mentoria para garantir compatibilidade e alinhamento com seu estilo de aprendizado ou ensino desejado.
+- **Seguro e Privado**: Tenha certeza de que seus dados e interações são mantidos seguros e privados, promovendo um ambiente confiável para mentoria.
 
-To get started with MentorMate-Kotlin, simply clone this repository to your local machine and follow the setup instructions in the [documentation](docs/setup.md).
+## Primeiros Passos
 
-## Contributing
+Para começar a usar o MentorMate-Kotlin, basta clonar este repositório para sua máquina local e seguir as instruções de configuração na documentação.
 
-We welcome contributions from the community! If you'd like to contribute to MentorMate-Kotlin, please check out our [contribution guidelines](CONTRIBUTING.md).
+## Contribuindo
 
-## Support
+Agradecemos contribuições da comunidade! Se você deseja contribuir com o MentorMate-Kotlin, por favor, consulte nossas diretrizes de contribuição.
 
-If you encounter any issues or have any questions, feel free to [open an issue](https://github.com/yourusername/MentorMate-Kotlin/issues) on GitHub.
+## Suporte
 
-## License
+Se você encontrar algum problema ou tiver alguma pergunta, sinta-se à vontade para abrir uma issue no GitHub.
 
-This project is licensed under the [MIT License](LICENSE).
+## Licença
 
+Este projeto está licenciado sob a Licença MIT.
