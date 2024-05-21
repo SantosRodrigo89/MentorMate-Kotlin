@@ -54,7 +54,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     SwipeAppNavigation(this)
-                    MainScreen(this)
                 }
             }
         }
