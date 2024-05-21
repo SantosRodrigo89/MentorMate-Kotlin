@@ -3,6 +3,7 @@ package br.com.fiap.mentormate
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import br.com.fiap.mentormate.data.COLLECTION_CHAT
 import br.com.fiap.mentormate.data.COLLECTION_MESSAGES
@@ -46,6 +47,7 @@ class MMViewModel @Inject constructor(
     val inProgressChatMessages = mutableStateOf(false)
     val chatMessages = mutableStateOf<List<Message>>(listOf())
     var currentChatMessagesListener: ListenerRegistration? = null
+
 
     init {
         // auth.signOut()
@@ -291,13 +293,15 @@ class MMViewModel @Inject constructor(
             .update("swipesLeft", FieldValue.arrayUnion(selectedUser.userId))
     }
 
-    fun onLike(selectedUser: UserData) {
+    fun onLike(selectedUser: UserData, context: Context) {
         val reciprocalMatch = selectedUser.swipesRight.contains(userData.value?.userId)
+        val notificationHandler = NotificationHandler(context)
         if (!reciprocalMatch) {
             db.collection(COLLECTION_USER).document(userData.value?.userId ?: "")
                 .update("swipesRight", FieldValue.arrayUnion(selectedUser.userId))
         } else {
             popupNotification.value = Event("Deu Match!")
+            notificationHandler.showSimpleNotification()
 
             db.collection(COLLECTION_USER).document(selectedUser.userId ?: "")
                 .update("swipesRight", FieldValue.arrayRemove(userData.value?.userId))
