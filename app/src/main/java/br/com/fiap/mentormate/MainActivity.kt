@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -42,6 +43,7 @@ sealed class DestinationScreen(val rout: String) {
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -51,7 +53,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    SwipeAppNavigation()
+                    SwipeAppNavigation(this)
+                    MainScreen(this)
                 }
             }
         }
@@ -76,7 +79,7 @@ private fun requestNotificationPermission(context: Context) {
 }
 
 @Composable
-fun SwipeAppNavigation() {
+fun SwipeAppNavigation(context: Context) {
     val navController = rememberNavController()
     val vm = hiltViewModel<MMViewModel>()
 
@@ -93,7 +96,7 @@ fun SwipeAppNavigation() {
             ProfileScreen(navController, vm)
         }
         composable(DestinationScreen.Swipe.rout) {
-            SwipeScreen(navController, vm)
+            SwipeScreen(navController, vm, context)
         }
         composable(DestinationScreen.ChatList.rout) {
             ChatListScreen(navController, vm)

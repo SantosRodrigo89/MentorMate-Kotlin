@@ -45,9 +45,10 @@ import br.com.fiap.mentormate.swipecards.Direction
 import br.com.fiap.mentormate.swipecards.rememberSwipeableCardState
 import br.com.fiap.mentormate.swipecards.swipableCard
 import kotlinx.coroutines.launch
+import android.content.Context
 
 @Composable
-fun SwipeScreen(navController: NavController, vm: MMViewModel) {
+fun SwipeScreen(navController: NavController, vm: MMViewModel, context: Context) {
     val inProgress = vm.inProgressProfiles.value
     if (inProgress)
         CommonProgressSpinner()
@@ -94,7 +95,7 @@ fun SwipeScreen(navController: NavController, vm: MMViewModel) {
                             ) {
                                 vm.onDislike(matchProfile)
                             } else {
-                                vm.onLike(matchProfile)
+                                vm.onLike(matchProfile, context)
                             }
                         }
                     }
