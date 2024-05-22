@@ -1,7 +1,7 @@
 package br.com.fiap.mentormate
 
-import android.app.Activity
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import br.com.fiap.mentormate.ui.ChatListScreen
 import br.com.fiap.mentormate.ui.LoginScreen
 import br.com.fiap.mentormate.ui.ProfileScreen
+import br.com.fiap.mentormate.ui.SearchScreen
 import br.com.fiap.mentormate.ui.SignupScreen
 import br.com.fiap.mentormate.ui.SingleChatScreen
 import br.com.fiap.mentormate.ui.SwipeScreen
@@ -38,6 +39,8 @@ sealed class DestinationScreen(val rout: String) {
     object SingleChat : DestinationScreen("singleChat/{chatId}") {
         fun createRoute(id: String) = "singleChat/$id"
     }
+
+    object Search : DestinationScreen("search")
 
 }
 
@@ -105,6 +108,9 @@ fun SwipeAppNavigation(context: Context) {
             chatId?.let {
                 SingleChatScreen(navController = navController, vm = vm, chatId = it)
             }
+        }
+        composable(DestinationScreen.Search.rout) {
+            SearchScreen(navController, vm)
         }
     }
 

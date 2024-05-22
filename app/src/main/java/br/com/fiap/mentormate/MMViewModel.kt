@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import br.com.fiap.mentormate.data.COLLECTION_CHAT
 import br.com.fiap.mentormate.data.COLLECTION_MESSAGES
 import br.com.fiap.mentormate.data.COLLECTION_USER
@@ -22,6 +23,15 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import java.util.Calendar
 import java.util.UUID
 import javax.inject.Inject
@@ -374,7 +384,59 @@ class MMViewModel @Inject constructor(
         currentChatMessagesListener = null
         chatMessages.value = listOf()
     }
+
+    private val _searchText = MutableStateFlow("")
+    val searchText = _searchText.asStateFlow()
+
+    private val _isSearching = MutableStateFlow(false)
+    val isSearching = _isSearching.asStateFlow()
+
+    private val _persons = MutableStateFlow<List<UserData>>(emptyList())
+    val persons = searchText
+        .debounce(1000L)
+        .onEach { _isSearching.update { true } }
+        .combine(_persons) { text, persons ->
+            if(text.isBlank()) {
+                persons
+            } else {
+                delay(2000L)
+                persons.filter {
+                    it.doesMatchSearchQuery(text)
+                }
+            }
+        }
+        .onEach { _isSearching.update { false } }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            _persons.value
+        )
+
+    fun onSearchTextChange(text: String) {
+        _searchText.value = text
+    }
+
+    private fun loadAllPersons() {
+        db.collection(COLLECTION_USER)
+            .get()
+            .addOnSuccessListener { result ->
+                val persons = result.documents.mapNotNull { it.toObject<UserData>() }
+                _persons.value = persons
+            }
+            .addOnFailureListener { exception ->
+                handleException(exception, "Failed to load users")
+            }
+    }
+
+    init {
+        loadAllPersons()
+    }
+
 }
+
+
+
+
 
 
 

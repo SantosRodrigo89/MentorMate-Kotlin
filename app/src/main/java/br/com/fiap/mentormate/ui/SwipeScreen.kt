@@ -1,5 +1,6 @@
 package br.com.fiap.mentormate.ui
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.ThumbUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -39,13 +41,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.com.fiap.mentormate.CommonImage
 import br.com.fiap.mentormate.CommonProgressSpinner
+import br.com.fiap.mentormate.DestinationScreen
 import br.com.fiap.mentormate.MMViewModel
 import br.com.fiap.mentormate.data.UserData
 import br.com.fiap.mentormate.swipecards.Direction
 import br.com.fiap.mentormate.swipecards.rememberSwipeableCardState
 import br.com.fiap.mentormate.swipecards.swipableCard
 import kotlinx.coroutines.launch
-import android.content.Context
 
 @Composable
 fun SwipeScreen(navController: NavController, vm: MMViewModel, context: Context) {
@@ -58,6 +60,17 @@ fun SwipeScreen(navController: NavController, vm: MMViewModel, context: Context)
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxSize()
         ) {
+            IconButton(
+                onClick = { navController.navigate(DestinationScreen.Search.rout) },
+                modifier = Modifier.align(Alignment.Start)
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Search,
+                    contentDescription = "Search Icon",
+                    tint = Color.Black
+                )
+            }
+
             //Spacer
             Spacer(modifier = Modifier.height(1.dp))
 
